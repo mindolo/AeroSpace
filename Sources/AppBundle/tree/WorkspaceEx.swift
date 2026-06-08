@@ -10,7 +10,13 @@ extension Workspace {
                     case .vertical: .v
                     case .auto: workspaceMonitor.then { $0.width >= $0.height } ? .h : .v
                 }
-                return TilingContainer(parent: self, adaptiveWeight: 1, orientation, config.defaultRootContainerLayout, index: INDEX_BIND_LAST)
+                let (rootLayout, rootBsp): (Layout, Bool) = switch config.defaultRootContainerLayout {
+                    case .tiles:    (.tiles, false)
+                    case .accordion: (.accordion, false)
+                    case .bsp:      (.tiles, true)
+                }
+                bspEnabled = rootBsp
+                return TilingContainer(parent: self, adaptiveWeight: 1, orientation, rootLayout, index: INDEX_BIND_LAST)
             case 1:
                 return containers.singleOrNil().orDie()
             default:

@@ -33,6 +33,9 @@ let false_help_generated = """
 let flatten_workspace_tree_help_generated = """
     USAGE: flatten-workspace-tree [-h|--help] [--workspace <workspace>]
     """
+let rebalance_bsp_help_generated = """
+    USAGE: rebalance-bsp [-h|--help] [--workspace <workspace>]
+    """
 let focus_back_and_forth_help_generated = """
     USAGE: focus-back-and-forth [-h|--help]
     """
@@ -61,7 +64,7 @@ let join_with_help_generated = """
     """
 let layout_help_generated = """
     USAGE: layout [-h|--help] [--window-id <window-id>]
-                  (h_tiles|v_tiles|h_accordion|v_accordion|tiles|accordion|horizontal|vertical|tiling|floating)...
+                  (h_tiles|v_tiles|h_accordion|v_accordion|tiles|accordion|horizontal|vertical|tiling|floating|bsp)...
     """
 let list_apps_help_generated = """
     USAGE: list-apps [-h|--help] [--macos-native-hidden [no]] [--format <output-format>] [--count] [--json]

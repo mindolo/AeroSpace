@@ -46,7 +46,20 @@ import Foundation
 
 @MainActor
 private func smartLayoutAtStartup() {
+    for workspace in Workspace.all where workspace.bspEnabled {
+        let root = workspace.rootTilingContainer
+        let windows = root.allLeafWindowsRecursive
+        if windows.count > 1 {
+            let monitorRect = workspace.workspaceMonitor.visibleRectPaddedByOuterGaps
+            for window in windows {
+                window.bind(to: root, adaptiveWeight: WEIGHT_AUTO, index: INDEX_BIND_LAST)
+            }
+            workspace.normalizeContainers()
+            buildBspSubtree(windows: windows, rect: monitorRect, parent: root, index: 0)
+        }
+    }
     let workspace = focus.workspace
+    guard !workspace.bspEnabled else { return }
     let root = workspace.rootTilingContainer
     switch root.children.count <= 3 {
         case true: root.layout = .tiles

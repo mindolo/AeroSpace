@@ -19,7 +19,12 @@ struct SwapCommand: Command {
             case .direction(let direction):
                 switch currentWindow.closestParent(hasChildrenInDirection: direction, withLayout: nil) {
                     case let (parent, ownIndex)?:
-                        targetWindow = parent.children[ownIndex + direction.focusOffset].findLeafWindowRecursive(snappedTo: direction.opposite)
+                        let adjacentNode = parent.children[ownIndex + direction.focusOffset]
+                        if target.workspace.bspEnabled, adjacentNode is TilingContainer {
+                            swapTreeNodes(parent.children[ownIndex], adjacentNode)
+                            return .succ
+                        }
+                        targetWindow = adjacentNode.findLeafWindowRecursive(snappedTo: direction.opposite)
                     case nil where args.wrapAround:
                         targetWindow = target.workspace.findLeafWindowRecursive(snappedTo: direction.opposite)
                     case nil:
@@ -47,7 +52,7 @@ struct SwapCommand: Command {
             return .fail
         }
 
-        swapWindows(currentWindow, targetWindow)
+        swapTreeNodes(currentWindow, targetWindow)
 
         if args.swapFocus {
             return .from(bool: targetWindow.focusWindow())
