@@ -10,6 +10,8 @@ extension CmdArgs {
                 command = TrueCommand(args: self as! TrueCmdArgs)
             case .balanceSizes:
                 command = BalanceSizesCommand(args: self as! BalanceSizesCmdArgs)
+            case .bspPresel:
+                command = BspPreselCommand(args: self as! BspPreselCmdArgs)
             case .close:
                 command = CloseCommand(args: self as! CloseCmdArgs)
             case .closeAllWindowsButCurrent:
@@ -24,6 +26,8 @@ extension CmdArgs {
                 die("exec-and-forget is parsed separately")
             case .flattenWorkspaceTree:
                 command = FlattenWorkspaceTreeCommand(args: self as! FlattenWorkspaceTreeCmdArgs)
+            case .flipNode:
+                command = FlipNodeCommand(args: self as! FlipNodeCmdArgs)
             case .focus:
                 command = FocusCommand(args: self as! FocusCmdArgs)
             case .focusBackAndForth:
@@ -66,6 +70,8 @@ extension CmdArgs {
                 command = MoveWorkspaceToMonitorCommand(args: self as! MoveWorkspaceToMonitorCmdArgs)
             case .rebalanceBsp:
                 command = RebalanceBspCommand(args: self as! RebalanceBspCmdArgs)
+            case .rotateNode:
+                command = RotateNodeCommand(args: self as! RotateNodeCmdArgs)
             case .reloadConfig:
                 command = ReloadConfigCommand(args: self as! ReloadConfigCmdArgs)
             case .resize:

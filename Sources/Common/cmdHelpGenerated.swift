@@ -4,6 +4,10 @@
 let balance_sizes_help_generated = """
     USAGE: balance-sizes [-h|--help] [--workspace <workspace>]
     """
+let bsp_presel_help_generated = """
+    USAGE: bsp-presel [-h|--help] [--workspace <workspace>]
+                      (left|down|up|right|cancel)
+    """
 let close_all_windows_but_current_help_generated = """
     USAGE: close-all-windows-but-current [-h|--help] [--quit-if-last-window]
     """
@@ -33,8 +37,8 @@ let false_help_generated = """
 let flatten_workspace_tree_help_generated = """
     USAGE: flatten-workspace-tree [-h|--help] [--workspace <workspace>]
     """
-let rebalance_bsp_help_generated = """
-    USAGE: rebalance-bsp [-h|--help] [--workspace <workspace>]
+let flip_node_help_generated = """
+    USAGE: flip-node [-h|--help] [--workspace <workspace>] [--recursive]
     """
 let focus_back_and_forth_help_generated = """
     USAGE: focus-back-and-forth [-h|--help]
@@ -126,11 +130,17 @@ let move_workspace_to_monitor_help_generated = """
 let move_help_generated = """
     USAGE: move [-h|--help] [--window-id <window-id>] [--boundaries <boundary>] [--boundaries-action <boundary-action>] (left|down|up|right)
     """
+let rebalance_bsp_help_generated = """
+    USAGE: rebalance-bsp [-h|--help] [--workspace <workspace>]
+    """
 let reload_config_help_generated = """
     USAGE: reload-config [-h|--help] [--no-gui] [--dry-run]
     """
 let resize_help_generated = """
     USAGE: resize [-h|--help] [--window-id <window-id>] (smart|smart-opposite|width|height) [+|-]<number>
+    """
+let rotate_node_help_generated = """
+    USAGE: rotate-node [-h|--help] [--workspace <workspace>] [--recursive]
     """
 let split_help_generated = """
     USAGE: split [-h|--help] [--window-id <window-id>] (horizontal|vertical|opposite)

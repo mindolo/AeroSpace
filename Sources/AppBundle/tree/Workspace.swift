@@ -36,6 +36,7 @@ final class Workspace: TreeNode, NonLeafTreeNodeObject, Hashable, Comparable {
     /// `assignedMonitorPoint` must be interpreted only when the workspace is invisible
     fileprivate var assignedMonitorPoint: CGPoint? = nil
     var bspEnabled: Bool = false
+    var bspPresel: CardinalDirection? = nil
 
     @MainActor
     private init(_ name: String) {

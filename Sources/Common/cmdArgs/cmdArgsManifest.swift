@@ -4,6 +4,7 @@ public enum CmdKind: String, CaseIterable, Equatable, Sendable {
     case _false = "false"
     case _true = "true"
     case balanceSizes = "balance-sizes"
+    case bspPresel = "bsp-presel"
     case close
     case closeAllWindowsButCurrent = "close-all-windows-but-current"
     case config
@@ -11,6 +12,7 @@ public enum CmdKind: String, CaseIterable, Equatable, Sendable {
     case enable
     case execAndForget = "exec-and-forget"
     case flattenWorkspaceTree = "flatten-workspace-tree"
+    case flipNode = "flip-node"
     case focus
     case focusBackAndForth = "focus-back-and-forth"
     case focusMonitor = "focus-monitor"
@@ -33,6 +35,7 @@ public enum CmdKind: String, CaseIterable, Equatable, Sendable {
     case moveWorkspaceToMonitor = "move-workspace-to-monitor"
     case rebalanceBsp = "rebalance-bsp"
     case reloadConfig = "reload-config"
+    case rotateNode = "rotate-node"
     case resize
     case split
     case subscribe
@@ -55,6 +58,8 @@ func initSubcommands() -> [String: any SubCommandParserProtocol] {
                 result[kind.rawValue] = SubCommandParser(TrueCmdArgs.init)
             case .balanceSizes:
                 result[kind.rawValue] = SubCommandParser(BalanceSizesCmdArgs.init)
+            case .bspPresel:
+                result[kind.rawValue] = SubCommandParser(parseBspPreselCmdArgs)
             case .close:
                 result[kind.rawValue] = SubCommandParser(CloseCmdArgs.init)
             case .closeAllWindowsButCurrent:
@@ -69,6 +74,8 @@ func initSubcommands() -> [String: any SubCommandParserProtocol] {
                 break // exec-and-forget is parsed separately
             case .flattenWorkspaceTree:
                 result[kind.rawValue] = SubCommandParser(FlattenWorkspaceTreeCmdArgs.init)
+            case .flipNode:
+                result[kind.rawValue] = SubCommandParser(FlipNodeCmdArgs.init)
             case .focus:
                 result[kind.rawValue] = SubCommandParser(parseFocusCmdArgs)
             case .focusBackAndForth:
@@ -115,6 +122,8 @@ func initSubcommands() -> [String: any SubCommandParserProtocol] {
                 result["move-workspace-to-display"] = SubCommandParser(MoveWorkspaceToMonitorCmdArgs.init)
             case .rebalanceBsp:
                 result[kind.rawValue] = SubCommandParser(RebalanceBspCmdArgs.init)
+            case .rotateNode:
+                result[kind.rawValue] = SubCommandParser(RotateNodeCmdArgs.init)
             case .reloadConfig:
                 result[kind.rawValue] = SubCommandParser(ReloadConfigCmdArgs.init)
             case .resize:

@@ -3,6 +3,7 @@
 
 let subcommandDescriptions = [
     ["  balance-sizes", "Balance sizes of all windows in the current workspace"],
+    ["  bsp-presel", "Preselect the split direction for the next window opened in BSP mode"],
     ["  close-all-windows-but-current", "On the focused workspace, close all windows but current"],
     ["  close", "Close the focused window"],
     ["  config", "Query AeroSpace config options"],
@@ -10,6 +11,7 @@ let subcommandDescriptions = [
     ["  enable", "Temporarily disable window management"],
     ["  false", "Return false value"],
     ["  flatten-workspace-tree", "Flatten the tree of the focused workspace"],
+    ["  flip-node", "Mirror the children of the focused window's parent container"],
     ["  focus-back-and-forth", "Switch between the current and previously focused elements back and forth"],
     ["  focus-monitor", "Focus monitor by relative direction, by order, or by pattern"],
     ["  focus", "Set focus to a window."],
@@ -30,9 +32,10 @@ let subcommandDescriptions = [
     ["  move-node-to-workspace", "Move the focused window to the specified workspace"],
     ["  move-workspace-to-monitor", "Move workspace to monitor targeted by relative direction, by order, or by pattern."],
     ["  move", "Move the focused window in the given direction"],
-    ["  rebalance-bsp", "Rebuild workspace windows into a BSP tree"],
+    ["  rebalance-bsp", "Rebuild the BSP binary tree for the current workspace using current window positions"],
     ["  reload-config", "Reload currently active config"],
     ["  resize", "Resize the focused window"],
+    ["  rotate-node", "Rotate the focused window's parent container 90 degrees clockwise"],
     ["  split", "Split focused window"],
     ["  subscribe", "Subscribe to AeroSpace events and receive notifications via socket"],
     ["  summon-workspace", "Move the requested workspace to the focused monitor."],

@@ -2,6 +2,32 @@ import Common
 
 private let bspRowGroupingThreshold: Double = 50
 
+@MainActor func reverseContainerChildren(_ container: TilingContainer) {
+    let snapshot = container.children.map { child in (child, child.unbindFromParent().adaptiveWeight) }
+    for (child, weight) in snapshot.reversed() {
+        child.bind(to: container, adaptiveWeight: weight, index: INDEX_BIND_LAST)
+    }
+}
+
+@MainActor func rotateContainer(_ container: TilingContainer) {
+    reverseContainerChildren(container)
+    container.changeOrientation(container.orientation.opposite)
+}
+
+@MainActor func rotateSubtree(_ container: TilingContainer) {
+    for child in container.children {
+        if let c = child as? TilingContainer { rotateSubtree(c) }
+    }
+    rotateContainer(container)
+}
+
+@MainActor func flipSubtree(_ container: TilingContainer) {
+    reverseContainerChildren(container)
+    for child in container.children {
+        if let c = child as? TilingContainer { flipSubtree(c) }
+    }
+}
+
 @MainActor func rebalanceBspWorkspace(_ workspace: Workspace) {
     let root = workspace.rootTilingContainer
     let windowsWithRects = root.allLeafWindowsRecursive.map { ($0, $0.lastAppliedLayoutPhysicalRect) }

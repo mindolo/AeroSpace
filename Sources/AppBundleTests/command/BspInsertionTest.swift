@@ -143,6 +143,131 @@ final class BspInsertionTest: XCTestCase {
         assertEquals(currentRoot.children.allSatisfy { $0 is Window }, false)
     }
 
+    func testBspPreselEastOpensRight() async throws {
+        let workspace = Workspace.get(byName: name)
+        let root = workspace.rootTilingContainer
+        workspace.bspEnabled = true
+        let w1 = TestWindow.new(id: 1, parent: root)
+        assertEquals(w1.focusWindow(), true)
+        workspace.bspPresel = .right
+
+        let w2 = TestWindow.new(id: 2, parent: root)
+        try await w2.relayoutWindow(on: workspace, forceTile: true)
+
+        // w1 left, w2 right; presel consumed
+        assertEquals(root.layoutDescription, .h_tiles([.h_tiles([.window(1), .window(2)])]))
+        assertEquals(workspace.bspPresel, nil)
+    }
+
+    func testBspPreselNorthOpensAbove() async throws {
+        let workspace = Workspace.get(byName: name)
+        let root = workspace.rootTilingContainer
+        workspace.bspEnabled = true
+        let w1 = TestWindow.new(id: 1, parent: root)
+        assertEquals(w1.focusWindow(), true)
+        workspace.bspPresel = .up
+
+        let w2 = TestWindow.new(id: 2, parent: root)
+        try await w2.relayoutWindow(on: workspace, forceTile: true)
+
+        // w2 above w1
+        assertEquals(root.layoutDescription, .h_tiles([.v_tiles([.window(2), .window(1)])]))
+        assertEquals(workspace.bspPresel, nil)
+    }
+
+    func testBspPreselCancelNoEffect() async throws {
+        let workspace = Workspace.get(byName: name)
+        let root = workspace.rootTilingContainer
+        workspace.bspEnabled = true
+        let w1 = TestWindow.new(id: 1, parent: root)
+        assertEquals(w1.focusWindow(), true)
+        workspace.bspPresel = .right
+
+        try await BspPreselCommand(args: BspPreselCmdArgs(rawArgs: [], direction: nil)).run(.defaultEnv, .emptyStdin)
+
+        assertEquals(workspace.bspPresel, nil)
+    }
+
+    func testBspPreselWorksWithoutRect() async throws {
+        let workspace = Workspace.get(byName: name)
+        let root = workspace.rootTilingContainer
+        workspace.bspEnabled = true
+        let w1 = TestWindow.new(id: 1, parent: root)
+        assertEquals(w1.focusWindow(), true)
+        // No lastAppliedLayoutPhysicalRect, but presel overrides
+        workspace.bspPresel = .down
+
+        let w2 = TestWindow.new(id: 2, parent: root)
+        try await w2.relayoutWindow(on: workspace, forceTile: true)
+
+        assertEquals(root.layoutDescription, .h_tiles([.v_tiles([.window(1), .window(2)])]))
+    }
+
+    func testRotateNodeFlipsOrientationAndReverses() async throws {
+        let workspace = Workspace.get(byName: name)
+        let root = workspace.rootTilingContainer
+        workspace.bspEnabled = true
+        let container = TilingContainer(parent: root, adaptiveWeight: 1, .h, .tiles, index: INDEX_BIND_LAST)
+        let w1 = TestWindow.new(id: 1, parent: container)
+        TestWindow.new(id: 2, parent: container)
+        assertEquals(w1.focusWindow(), true)
+
+        try await RotateNodeCommand(args: RotateNodeCmdArgs(rawArgs: [])).run(.defaultEnv, .emptyStdin)
+
+        // orientation h→v, children reversed: [w2, w1]
+        assertEquals(root.layoutDescription, .h_tiles([.v_tiles([.window(2), .window(1)])]))
+    }
+
+    func testRotateNodeFourTimesRestoresOriginal() async throws {
+        let workspace = Workspace.get(byName: name)
+        let root = workspace.rootTilingContainer
+        workspace.bspEnabled = true
+        let container = TilingContainer(parent: root, adaptiveWeight: 1, .h, .tiles, index: INDEX_BIND_LAST)
+        let w1 = TestWindow.new(id: 1, parent: container)
+        TestWindow.new(id: 2, parent: container)
+        TestWindow.new(id: 3, parent: container)
+        assertEquals(w1.focusWindow(), true)
+        let original = root.layoutDescription
+
+        for _ in 0 ..< 4 {
+            try await RotateNodeCommand(args: RotateNodeCmdArgs(rawArgs: [])).run(.defaultEnv, .emptyStdin)
+        }
+
+        assertEquals(root.layoutDescription, original)
+    }
+
+    func testFlipNodeReversesChildren() async throws {
+        let workspace = Workspace.get(byName: name)
+        let root = workspace.rootTilingContainer
+        workspace.bspEnabled = true
+        let container = TilingContainer(parent: root, adaptiveWeight: 1, .h, .tiles, index: INDEX_BIND_LAST)
+        let w1 = TestWindow.new(id: 1, parent: container)
+        TestWindow.new(id: 2, parent: container)
+        TestWindow.new(id: 3, parent: container)
+        assertEquals(w1.focusWindow(), true)
+
+        try await FlipNodeCommand(args: FlipNodeCmdArgs(rawArgs: [])).run(.defaultEnv, .emptyStdin)
+
+        // orientation unchanged (h), children reversed: [w3, w2, w1]
+        assertEquals(root.layoutDescription, .h_tiles([.h_tiles([.window(3), .window(2), .window(1)])]))
+    }
+
+    func testFlipNodeTwiceRestoresOriginal() async throws {
+        let workspace = Workspace.get(byName: name)
+        let root = workspace.rootTilingContainer
+        workspace.bspEnabled = true
+        let container = TilingContainer(parent: root, adaptiveWeight: 1, .h, .tiles, index: INDEX_BIND_LAST)
+        let w1 = TestWindow.new(id: 1, parent: container)
+        TestWindow.new(id: 2, parent: container)
+        assertEquals(w1.focusWindow(), true)
+        let original = root.layoutDescription
+
+        try await FlipNodeCommand(args: FlipNodeCmdArgs(rawArgs: [])).run(.defaultEnv, .emptyStdin)
+        try await FlipNodeCommand(args: FlipNodeCmdArgs(rawArgs: [])).run(.defaultEnv, .emptyStdin)
+
+        assertEquals(root.layoutDescription, original)
+    }
+
     func testSwapBspSubtreeDirectional() async throws {
         let workspace = Workspace.get(byName: name)
         let root = workspace.rootTilingContainer

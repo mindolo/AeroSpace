@@ -227,19 +227,18 @@ private func unbindAndGetBindingDataForNewTilingWindow(_ workspace: Workspace, w
     if workspace.bspEnabled,
        let mruWindow,
        let mruParent = mruWindow.parent as? TilingContainer,
-       let rect = mruWindow.lastAppliedLayoutPhysicalRect
+       let splitParams = bspSplitParams(workspace: workspace, mruWindow: mruWindow)
     {
-        let orientation: Orientation = rect.width >= rect.height ? .h : .v
         let mruData = mruWindow.unbindFromParent()
         let newContainer = TilingContainer(
             parent: mruParent,
             adaptiveWeight: mruData.adaptiveWeight,
-            orientation,
+            splitParams.orientation,
             .tiles,
             index: mruData.index,
         )
-        mruWindow.bind(to: newContainer, adaptiveWeight: WEIGHT_AUTO, index: 0)
-        return BindingData(parent: newContainer, adaptiveWeight: WEIGHT_AUTO, index: INDEX_BIND_LAST)
+        mruWindow.bind(to: newContainer, adaptiveWeight: WEIGHT_AUTO, index: splitParams.newWindowFirst ? INDEX_BIND_LAST : 0)
+        return BindingData(parent: newContainer, adaptiveWeight: WEIGHT_AUTO, index: splitParams.newWindowFirst ? 0 : INDEX_BIND_LAST)
     }
     if let mruWindow, let tilingParent = mruWindow.parent as? TilingContainer {
         return BindingData(
@@ -254,6 +253,20 @@ private func unbindAndGetBindingDataForNewTilingWindow(_ workspace: Workspace, w
             index: INDEX_BIND_LAST,
         )
     }
+}
+
+private struct BspSplitParams { let orientation: Orientation; let newWindowFirst: Bool }
+
+@MainActor
+private func bspSplitParams(workspace: Workspace, mruWindow: Window) -> BspSplitParams? {
+    if let presel = workspace.bspPresel {
+        workspace.bspPresel = nil
+        return BspSplitParams(orientation: presel.orientation, newWindowFirst: !presel.isPositive)
+    }
+    if let rect = mruWindow.lastAppliedLayoutPhysicalRect {
+        return BspSplitParams(orientation: rect.width >= rect.height ? .h : .v, newWindowFirst: false)
+    }
+    return nil
 }
 
 @MainActor
