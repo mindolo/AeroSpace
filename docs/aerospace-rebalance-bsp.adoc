@@ -1,0 +1,44 @@
+= aerospace-rebalance-bsp(1)
+include::util/man-attributes.adoc[]
+:manname: aerospace-rebalance-bsp
+// tag::purpose[]
+:manpurpose: Rebuild the BSP binary tree for the current workspace using current window positions
+// end::purpose[]
+
+// =========================================================== Synopsis
+== Synopsis
+[verse]
+// tag::synopsis[]
+aerospace rebalance-bsp [-h|--help] [--workspace <workspace>]
+
+// end::synopsis[]
+
+// =========================================================== Description
+== Description
+
+// tag::body[]
+{manpurpose}
+
+Windows are sorted by their on-screen position (top-to-bottom, left-to-right) and arranged into a balanced binary tree.
+Each split is oriented based on the aspect ratio of the region it occupies: wide regions split horizontally, tall regions split vertically.
+
+This command has no effect if `bsp` is not the active layout for the workspace.
+
+// =========================================================== Options
+include::./util/conditional-options-header.adoc[]
+
+-h, --help:: Print help
+
+--workspace <workspace>::
+include::./util/workspace-flag-desc.adoc[]
+
+// =========================================================== Examples
+include::util/conditional-examples-header.adoc[]
+
+* Rebuild the BSP tree for the focused workspace: +
+`aerospace rebalance-bsp`
+
+// end::body[]
+
+// =========================================================== Footer
+include::util/man-footer.adoc[]

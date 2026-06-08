@@ -1,0 +1,51 @@
+= aerospace-flip-node(1)
+include::util/man-attributes.adoc[]
+:manname: aerospace-flip-node
+// tag::purpose[]
+:manpurpose: Mirror the children of the focused window's parent container
+// end::purpose[]
+
+// =========================================================== Synopsis
+== Synopsis
+[verse]
+// tag::synopsis[]
+aerospace flip-node [-h|--help] [--workspace <workspace>] [--recursive]
+
+// end::synopsis[]
+
+// =========================================================== Description
+== Description
+
+// tag::body[]
+{manpurpose}
+
+Reverses the order of children in the focused window's parent container without changing the container's orientation.
+For a horizontal container this mirrors windows left-to-right; for a vertical container it mirrors top-to-bottom.
+Calling `flip-node` twice restores the original layout.
+
+With `--recursive`, every container in the subtree rooted at the parent is flipped.
+
+// =========================================================== Options
+include::./util/conditional-options-header.adoc[]
+
+-h, --help:: Print help
+
+--workspace <workspace>::
+include::./util/workspace-flag-desc.adoc[]
+
+--recursive::
+Flip every container in the subtree, not just the immediate parent of the focused window.
+
+// =========================================================== Examples
+include::util/conditional-examples-header.adoc[]
+
+* Mirror the split containing the focused window: +
+`aerospace flip-node`
+
+* Mirror the entire subtree: +
+`aerospace flip-node --recursive`
+
+// end::body[]
+
+// =========================================================== Footer
+include::util/man-footer.adoc[]

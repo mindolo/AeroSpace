@@ -1,0 +1,61 @@
+= aerospace-bsp-presel(1)
+include::util/man-attributes.adoc[]
+:manname: aerospace-bsp-presel
+// tag::purpose[]
+:manpurpose: Preselect the split direction for the next window opened in BSP mode
+// end::purpose[]
+
+// =========================================================== Synopsis
+== Synopsis
+[verse]
+// tag::synopsis[]
+aerospace bsp-presel [-h|--help] [--workspace <workspace>]
+                     (left|down|up|right|cancel)
+
+// end::synopsis[]
+
+// =========================================================== Description
+== Description
+
+// tag::body[]
+{manpurpose}
+
+When `bsp` is the active layout, new windows normally split the focused window's slot based on its aspect ratio.
+`bsp-presel` overrides that: the _next_ window that opens will be inserted in the specified direction relative to the currently focused window, regardless of aspect ratio.
+The preselection is consumed after one window opens and does not persist.
+
+`cancel` clears any pending preselection without waiting for a window to open.
+
+// =========================================================== Options
+include::./util/conditional-options-header.adoc[]
+
+-h, --help:: Print help
+
+--workspace <workspace>::
+include::./util/workspace-flag-desc.adoc[]
+
+// =========================================================== Arguments
+include::./util/conditional-arguments-header.adoc[]
+
+(left|down|up|right)::
+The direction in which the next window will be inserted relative to the focused window.
+
+cancel::
+Clear a pending preselection.
+
+// =========================================================== Examples
+include::util/conditional-examples-header.adoc[]
+
+* Open next window to the right of the focused window: +
+`aerospace bsp-presel right`
+
+* Open next window above the focused window: +
+`aerospace bsp-presel up`
+
+* Cancel a pending preselection: +
+`aerospace bsp-presel cancel`
+
+// end::body[]
+
+// =========================================================== Footer
+include::util/man-footer.adoc[]

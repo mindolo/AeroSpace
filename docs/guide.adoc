@@ -283,6 +283,132 @@ While in a `v_accordion`, you can navigate the windows using the `focus (up|down
 
 Accordion padding is configurable via `accordion-padding` option.
 
+[#bsp]
+=== BSP layout
+
+==== What it is
+
+BSP stands for Binary Space Partitioning.
+In the context of window management it is a self-organizing tiling strategy: every new window *halves an existing region* on screen, and the result is always a balanced binary tree of splits.
+No manual layout work is required — windows fill all available space automatically.
+
+The idea originates from https://github.com/baskerville/bspwm[bspwm] and was later adopted by https://github.com/koekeishiya/yabai[yabai].
+
+==== Why use BSP
+
+In standard `tiles` mode you decide the tree structure explicitly: you choose whether to split a container horizontally or vertically, you choose where windows go when you use `move`, and you choose when to `join-with` or `split` to nest containers.
+This gives full control, but requires deliberate action every time a window opens.
+
+BSP inverts that: the layout manages itself.
+Every window that opens is placed beside whatever you were looking at, using the available space efficiently.
+This suits workflows where you open and close many windows quickly and want them to always be visible and reasonably sized without touching layout commands.
+
+The tradeoff: BSP produces deeper tree structures that can feel less predictable than a flat `tiles` layout.
+Both modes exist in AeroSpace because neither is universally better — it depends on how you work.
+
+==== How it works
+
+The workspace is modelled as a binary tree.
+Each internal node is a container that divides its region into two halves; each leaf node is a window.
+
+.Example: three windows in BSP. The workspace region is split once horizontally, then the right half is split vertically
+----
+workspace
+└── h_tiles
+    ├── window A          (left half)
+    └── v_tiles           (right half)
+        ├── window B      (top-right quarter)
+        └── window C      (bottom-right quarter)
+----
+
+Every region is occupied by exactly one window.
+No space is wasted, no window overlaps another.
+
+==== How insertion works
+
+When a new window opens in BSP mode:
+
+. AeroSpace wraps the focused window in a new container
+. The container's orientation is determined by the focused window's aspect ratio: wide → horizontal split, tall → vertical split
+. The new window is placed beside the focused window within that container
+
+Use xref:commands.adoc#bsp-presel[`bsp-presel`] to choose the split direction explicitly before the next window opens.
+Use xref:commands.adoc#rebalance-bsp[`rebalance-bsp`] to rebuild the entire tree from scratch based on current window positions.
+
+Enable BSP with xref:commands.adoc#layout[`layout bsp`].
+Disable it with `layout tiles` or `layout accordion`; the binary tree is flattened to a single level before the new layout is applied.
+
+==== BSP commands
+
+[cols="1,3"]
+|===
+| Command | Effect
+
+| `layout bsp` | Enable BSP, rebalance the workspace tree
+| `layout tiles` | Disable BSP, flatten the tree
+| `rebalance-bsp` | Rebuild the binary tree using current window positions
+| `bsp-presel right` | Next window opens to the right of the focused window
+| `rotate-node` | Rotate the split (flip orientation + reverse children)
+| `flip-node` | Mirror children order without changing orientation
+| `swap left\|right\|up\|down` | In BSP mode, swaps entire subtrees when adjacent node is a container
+|===
+
+==== Example keybindings
+
+[source,toml]
+----
+# Enable / disable BSP
+alt-b = 'layout bsp tiles'           # toggle BSP on/off
+
+# Rebuild tree (useful after moving windows around)
+alt-shift-b = 'rebalance-bsp'
+
+# Preselect split direction before opening the next window
+# (similar to bspwm's alt-{h,j,k,l} presel)
+alt-ctrl-h = 'bsp-presel left'
+alt-ctrl-j = 'bsp-presel down'
+alt-ctrl-k = 'bsp-presel up'
+alt-ctrl-l = 'bsp-presel right'
+alt-ctrl-space = 'bsp-presel cancel'  # clear preselection
+
+# Rotate / flip the current split
+alt-r       = 'rotate-node'           # 90° clockwise
+alt-shift-r = 'rotate-node --recursive'
+alt-f       = 'flip-node'             # mirror children
+alt-shift-f = 'flip-node --recursive'
+
+# Swap subtrees (works in BSP and standard tiling)
+alt-shift-h = 'swap left'
+alt-shift-j = 'swap down'
+alt-shift-k = 'swap up'
+alt-shift-l = 'swap right'
+----
+
+==== Relationship to existing commands
+
+BSP mode is not magic — it is automation built on top of primitives that already exist in AeroSpace.
+
+The manual equivalent of BSP insertion is the xref:commands.adoc#split[`split`] command: it wraps the focused window in a new container and places the next window beside it.
+BSP simply calls this automatically on every window open, choosing the split orientation based on aspect ratio, so you never have to think about it.
+
+Similarly, xref:commands.adoc#rebalance-bsp[`rebalance-bsp`] is equivalent to running xref:commands.adoc#flatten-workspace-tree[`flatten-workspace-tree`] and then re-splitting every window through `split` — just done in one step.
+
+The two things that could not be scripted from existing commands are:
+
+* **Automatic insertion** — the split must happen at window-open time, before the user can issue any command.
+  This requires engine-level support (`bspEnabled` flag on the workspace).
+* **Preselection state** — `bsp-presel` stores a direction that survives until the next window opens.
+  A one-shot command cannot do this.
+
+Everything else (`rotate-node`, `flip-node`, subtree swap) operates on the tree after the fact and has no timing dependency.
+
+==== Differences from bspwm / yabai
+
+* **No receptacles.** AeroSpace does not support empty placeholder slots.
+* **Insertion is MRU-based.** The focused window is always the split target.
+  Use `bsp-presel` for directional control.
+* **`rotate-node` is single-axis.** One call rotates the immediate parent; use `--recursive` for subtree-wide rotation.
+
 [#normalization]
 === Normalization
 

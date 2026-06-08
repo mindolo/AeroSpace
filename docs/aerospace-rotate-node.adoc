@@ -1,0 +1,51 @@
+= aerospace-rotate-node(1)
+include::util/man-attributes.adoc[]
+:manname: aerospace-rotate-node
+// tag::purpose[]
+:manpurpose: Rotate the focused window's parent container 90 degrees clockwise
+// end::purpose[]
+
+// =========================================================== Synopsis
+== Synopsis
+[verse]
+// tag::synopsis[]
+aerospace rotate-node [-h|--help] [--workspace <workspace>] [--recursive]
+
+// end::synopsis[]
+
+// =========================================================== Description
+== Description
+
+// tag::body[]
+{manpurpose}
+
+Flips the orientation of the focused window's parent container (horizontal ↔ vertical) and reverses the order of its children.
+This is equivalent to a 90° clockwise rotation of the split.
+Calling `rotate-node` four times restores the original layout.
+
+With `--recursive`, every container in the subtree rooted at the parent is rotated.
+
+// =========================================================== Options
+include::./util/conditional-options-header.adoc[]
+
+-h, --help:: Print help
+
+--workspace <workspace>::
+include::./util/workspace-flag-desc.adoc[]
+
+--recursive::
+Rotate every container in the subtree, not just the immediate parent of the focused window.
+
+// =========================================================== Examples
+include::util/conditional-examples-header.adoc[]
+
+* Rotate the split containing the focused window: +
+`aerospace rotate-node`
+
+* Rotate the entire subtree: +
+`aerospace rotate-node --recursive`
+
+// end::body[]
+
+// =========================================================== Footer
+include::util/man-footer.adoc[]

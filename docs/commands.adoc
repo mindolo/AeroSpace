@@ -12,6 +12,13 @@ include::aerospace-balance-sizes.adoc[tags=synopsis]
 include::aerospace-balance-sizes.adoc[tags=purpose]
 include::aerospace-balance-sizes.adoc[tags=body]
 
+== bsp-presel
+----
+include::aerospace-bsp-presel.adoc[tags=synopsis]
+----
+include::aerospace-bsp-presel.adoc[tags=purpose]
+include::aerospace-bsp-presel.adoc[tags=body]
+
 == close
 ----
 include::aerospace-close.adoc[tags=synopsis]
@@ -46,6 +53,13 @@ include::aerospace-flatten-workspace-tree.adoc[tags=synopsis]
 ----
 include::aerospace-flatten-workspace-tree.adoc[tags=purpose]
 include::aerospace-flatten-workspace-tree.adoc[tags=body]
+
+== flip-node
+----
+include::aerospace-flip-node.adoc[tags=synopsis]
+----
+include::aerospace-flip-node.adoc[tags=purpose]
+include::aerospace-flip-node.adoc[tags=body]
 
 == focus
 ----
@@ -147,12 +161,26 @@ include::aerospace-move-workspace-to-monitor.adoc[tags=synopsis]
 include::aerospace-move-workspace-to-monitor.adoc[tags=purpose]
 include::aerospace-move-workspace-to-monitor.adoc[tags=body]
 
+== rebalance-bsp
+----
+include::aerospace-rebalance-bsp.adoc[tags=synopsis]
+----
+include::aerospace-rebalance-bsp.adoc[tags=purpose]
+include::aerospace-rebalance-bsp.adoc[tags=body]
+
 == reload-config
 ----
 include::aerospace-reload-config.adoc[tags=synopsis]
 ----
 include::aerospace-reload-config.adoc[tags=purpose]
 include::aerospace-reload-config.adoc[tags=body]
+
+== rotate-node
+----
+include::aerospace-rotate-node.adoc[tags=synopsis]
+----
+include::aerospace-rotate-node.adoc[tags=purpose]
+include::aerospace-rotate-node.adoc[tags=body]
 
 == resize
 ----
